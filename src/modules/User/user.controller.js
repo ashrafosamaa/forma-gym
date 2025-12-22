@@ -2,6 +2,7 @@ import { APIFeatures } from "../../utils/api-features.js";
 import { generateUniqueString } from "../../utils/generate-unique-string.js"
 
 import User from "../../../DB/models/user.model.js";
+import Membership from "../../../DB/models/membership.model.js";
 import cloudinaryConnection from "../../utils/cloudinary.js";
 
 import bcrypt from "bcryptjs"
@@ -110,6 +111,8 @@ export const deleteUser = async(req, res, next)=> {
         await cloudinaryConnection().api.delete_resources_by_prefix(folder)
         await cloudinaryConnection().api.delete_folder(folder)
     }
+    //delete memeberships of user
+    await Membership.deleteMany({UserId: userId})
     await deleteUser.deleteOne()
     // send response
     res.status(200).json({
@@ -276,6 +279,8 @@ export const deleteAccount = async (req, res, next)=> {
         await cloudinaryConnection().api.delete_resources_by_prefix(folder)
         await cloudinaryConnection().api.delete_folder(folder)
     }
+    //delete memeberships of user
+    await Membership.deleteMany({UserId: _id})
     // delete user data
     await deleteUser.deleteOne()
     // send response

@@ -23,9 +23,10 @@ export const initiateApp = (app, express)=> {
 
     db_connection()
 
+    app.use('/admin', routers.adminRouter)
     app.use('/userAuth', routers.userAuthRouter)
     app.use('/user', routers.userRouter)
-    app.use('/admin', routers.adminRouter)
+    app.use('/membership', routers.membershipRouter)
 
 
     app.get('/', (req, res, next)=> {
