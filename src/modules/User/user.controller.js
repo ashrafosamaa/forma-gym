@@ -8,6 +8,8 @@ import cloudinaryConnection from "../../utils/cloudinary.js";
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 
+//admin
+
 export const getAllUsers = async (req, res, next) => {
     // destruct data from req.query
     const {page, size, sortBy} = req.query;
@@ -80,7 +82,7 @@ export const updateUser = async(req, res, next)=> {
         user.phoneNumber = phoneNumber
     }
     // update user data
-    if(firstName || lastName || phoneNumber || weight || height || memberStatus){
+    if(firstName || lastName || weight || height || memberStatus){
         user.firstName = firstName ?? user.firstName
         user.lastName = lastName ?? user.lastName
         user.phoneNumber = phoneNumber ?? user.phoneNumber
@@ -97,7 +99,7 @@ export const updateUser = async(req, res, next)=> {
     })
 }
 
-export const deleteUser = async(req, res, next)=> {
+export const deleteUserAcc = async(req, res, next)=> {
     // destruct data from user
     const {userId} = req.params
     // delete user data
@@ -120,6 +122,8 @@ export const deleteUser = async(req, res, next)=> {
         statusCode: 200
     })
 }
+
+//additional features for user
 
 export const addProfilePicture = async (req, res, next)=> {
     // destruct data from user
@@ -181,6 +185,8 @@ export const updateProfilePicture = async (req, res, next)=> {
         statusCode: 200,
     })
 }
+
+//user
 
 export const getAccountData = async (req, res, next)=> {
     // destruct data from user

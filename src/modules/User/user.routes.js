@@ -26,7 +26,7 @@ router.put('/update/:userId', authAdmin(), validationMiddleware(validator.update
     expressAsyncHandler(userController.updateUser))
 
 router.delete('/delete/:userId', authAdmin(), validationMiddleware(validator.IDValidator),
-    expressAsyncHandler(userController.deleteUser))
+    expressAsyncHandler(userController.deleteUserAcc))
 
 router.get('/profiledata', authUser(), validationMiddleware(validator.noValidator),
     expressAsyncHandler(userController.getAccountData))

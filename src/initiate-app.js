@@ -27,6 +27,7 @@ export const initiateApp = (app, express)=> {
     app.use('/userAuth', routers.userAuthRouter)
     app.use('/user', routers.userRouter)
     app.use('/membership', routers.membershipRouter)
+    app.use('/trainer', routers.trainerRouter)
 
 
     app.get('/', (req, res, next)=> {

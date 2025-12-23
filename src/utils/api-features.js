@@ -41,6 +41,19 @@ export class APIFeatures {
     }
 
 
+    // Search on trainers with any field
+    searchTrainers(search) {
+        const queryFiler = {}
+        
+        if (search.userName) queryFiler.userName = { $regex: search.userName, $options: 'i' }
+        if (search.phoneNumber) queryFiler.phoneNumber = { $regex: search.phoneNumber, $options: 'i' }
+        if (search.specialization) queryFiler.specialization = { $regex: search.specialization, $options: 'i' }
+
+        this.mongooseQuery = this.mongooseQuery.find(queryFiler)
+        return this
+    }
+
+
     //  Search on category , style , subject with any field
     // searchTitle(search) {
     //     const queryFiler = {}
