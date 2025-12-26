@@ -87,6 +87,7 @@ export const updateMembershipValidatorByAdmin = {
     })
 }
 
+
 export const getAllUserMembershipsValidatorByAdmin = {
     body: Joi.object({
         phoneNumber: Joi.string().required().length(11).pattern(/^[0-9]+$/, "i")

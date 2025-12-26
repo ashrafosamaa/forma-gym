@@ -12,6 +12,7 @@ import expressAsyncHandler from "express-async-handler";
 
 const router = Router();
 
+//admin
 
 router.get('/', authAdmin(), validationMiddleware(validator.getAllUsersValidator),
     expressAsyncHandler(userController.getAllUsers))
@@ -27,6 +28,8 @@ router.put('/update/:userId', authAdmin(), validationMiddleware(validator.update
 
 router.delete('/delete/:userId', authAdmin(), validationMiddleware(validator.IDValidator),
     expressAsyncHandler(userController.deleteUserAcc))
+
+//user
 
 router.get('/profiledata', authUser(), validationMiddleware(validator.noValidator),
     expressAsyncHandler(userController.getAccountData))

@@ -45,6 +45,7 @@ router.delete('/delete/:membershipId', authAdmin(), validationMiddleware(validat
     expressAsyncHandler(membershipController.deleteMembershipByAdmin))
 
 // addition feature
+
 router.get('/for-user', authAdmin(), validationMiddleware(validator.getAllUserMembershipsValidatorByAdmin),
     expressAsyncHandler(membershipController.getAllMemberShipsForUser))
 

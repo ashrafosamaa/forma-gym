@@ -9,11 +9,9 @@ import expressAsyncHandler from "express-async-handler";
 
 const router = Router();
 
-
 // router.get('/keep-alive', (req, res, next) => {
 //     res.send('Application is awake!');
 // })
-
 
 router.post('/signup', validationMiddleware(validator.signupValidator),
     expressAsyncHandler(adminController.signUp))
