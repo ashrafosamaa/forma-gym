@@ -12,7 +12,7 @@ export const authAdmin = (accessRoles = "admin") => {
             if (!decodedData || !decodedData.id) return next(new Error('Invalid token payload', { cause: 400 }))
             
             // admin check 
-            const findAdmin = await Admin.findById(decodedData.id, 'name email role')
+            const findAdmin = await Admin.findById(decodedData.id, 'userName role')
             if (!findAdmin) return next(new Error('Please signUp first', { cause: 404 }))
             // auhtorization
             if (!accessRoles.includes(findAdmin.role)) return next(new Error('Unauthorized', { cause: 401 }))

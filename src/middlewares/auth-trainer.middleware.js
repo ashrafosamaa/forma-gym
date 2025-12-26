@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
-import User from "../../DB/models/user.model.js"
+import Trainer from '../../DB/models/trainer.model.js'
 
-export const authUser = (accessRoles = "user") => {
+export const authTrainer = (accessRoles = "trainer") => {
     return async (req, res, next) => {
         try {
             const { accesstoken } = req.headers
@@ -11,13 +11,12 @@ export const authUser = (accessRoles = "user") => {
             
             if (!decodedData || !decodedData.id) return next(new Error('Invalid token payload', { cause: 400 }))
             
-            // user check 
-            const findUser = await User.findById(decodedData.id, 'firstName email role')
-            if (!findUser) return next(new Error('Please signUp first', { cause: 404 }))
+            // trainer check
+            const findTrainer = await Trainer.findById(decodedData.id, 'userName email role')
+            if (!findTrainer) return next(new Error('Please signUp first', { cause: 404 }))
             // auhtorization
-            if (!accessRoles.includes(findUser.role)) return next(new Error('Unauthorized', { cause: 401 }))
-            req.authUser = findUser
-
+            if (!accessRoles.includes(findTrainer.role)) return next(new Error('Unauthorized', { cause: 401 }))
+            req.authTrainer = findTrainer
             next()
         } catch (error) {
             console.log(error);

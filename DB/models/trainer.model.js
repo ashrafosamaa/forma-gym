@@ -15,15 +15,19 @@ const trainerSchema = new Schema({
         type: Number,
         required: true
     },
+    passwordOneUse: {
+        type: String,
+        minlength: 8
+    },
     password: {
         type: String,
-        required: true,
         minlength: 8
     },
     phoneNumber: {
         type: String,
         unique: true,
-        length: 11
+        length: 11,
+        required: true
     },
     gender: {
         type: String,
@@ -63,8 +67,12 @@ const trainerSchema = new Schema({
         enum: ["trainer"],
         default: "trainer"
     },
+    isFirstTime: {
+        type: Boolean,
+        default: true
+    }
 }, {timestamps: true,});
 
-const Trainer = model("trainerSchema", trainerSchema);
+const Trainer = model("Trainer", trainerSchema);
 
 export default Trainer;

@@ -129,7 +129,7 @@ export const addProfilePicture = async (req, res, next)=> {
     // destruct data from user
     const {_id} = req.authUser
     // update user data
-    const user = await User.findById(_id).select("firstName lastName phoneNumber email profileImg")
+    const user = await User.findById(_id)
     if (!user) {
         return next (new Error("User not found", { cause: 404 }))
     }
@@ -166,7 +166,7 @@ export const updateProfilePicture = async (req, res, next)=> {
         return next (new Error("Image is required", { cause: 400 }))
     }
     // update user data
-    const user = await User.findById(_id).select("firstName lastName phoneNumber email profileImg folderId")
+    const user = await User.findById(_id)
     if(user.profileImg.public_id != oldPublicId){
         return next (new Error("You cannot update this profile's picture", { cause: 400 }))
     }
@@ -192,10 +192,8 @@ export const getAccountData = async (req, res, next)=> {
     // destruct data from user
     const {_id} = req.authUser
     // get user data
-    const getUser = await User.findById(_id).select("firstName lastName phoneNumber email memberStatus gender profileImg.secure_url weight height")
-    if (!getUser) {
-        return next (new Error("User not found", { cause: 404 }))
-    }
+    const getUser = await User.findById(_id)
+        .select("firstName lastName phoneNumber email memberStatus gender profileImg.secure_url weight height")
     // send response
     res.status(200).json({
         msg: "User data fetched successfully",
@@ -210,10 +208,6 @@ export const updateProfileData = async (req, res, next)=> {
     const{firstName, lastName, phoneNumber, weight, height} = req.body
     // find user
     const user = await User.findById(_id).select("firstName lastName phoneNumber email memberStatus gender profileImg.secure_url weight height")
-    // check user
-    if(!user){
-        return next (new Error("User not found", { cause: 404 }))
-    }
     // new phone check
     if(phoneNumber){
         const isPhoneExist = await User.findOne({phoneNumber, _id: {$ne: _id} })
@@ -276,9 +270,6 @@ export const deleteAccount = async (req, res, next)=> {
     const {_id} = req.authUser
     // delete user data
     const deleteUser = await User.findById(_id)
-    if (!deleteUser) {
-        return next (new Error("User not found", { cause: 404 }))
-    }
     // delete photo
     if(deleteUser.profileImg.public_id){
         const folder = `${process.env.MAIN_FOLDER}/Users/${deleteUser.folderId}`
