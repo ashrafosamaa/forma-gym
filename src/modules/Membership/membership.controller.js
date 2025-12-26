@@ -99,7 +99,7 @@ export const deleteMyMembership = async (req, res, next)=> {
     if(!membership){
         return next(new Error("Membership is not found", { cause: 404 }));
     }
-    if(membership.isActive) {
+    if(membership.isActive || membership.isPaid) {
         return next(new Error("You can not delete your membership now", { cause: 403 }));
     }
     await membership.deleteOne()
@@ -214,7 +214,7 @@ export const deleteMembershipByAdmin = async (req, res, next)=> {
     if(!membership){
         return next(new Error("Membership is not found", { cause: 404 }));
     }
-    if(membership.isActive) {
+    if(membership.isActive || membership.isPaid) {
         return next(new Error("You can not delete your membership now", { cause: 403 }));
     }
     await membership.deleteOne()
@@ -236,6 +236,7 @@ export const getAllMemberShipsForUser = async (req, res, next) => {
         return next(new Error("User is not found", { cause: 404 }))
     }
     const memberships = await Membership.find({ UserId: user._id }).select("duration startDate endDate price isActive isPaid")
+        .populate({ path: "UserId", select: "firstName lastName phoneNumber" })
     if (!memberships.length) {
         return next(new Error("No memberships found", { cause: 404 }));
     }

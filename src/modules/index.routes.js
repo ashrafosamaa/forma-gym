@@ -3,6 +3,7 @@ import userAuthRouter from "./User-Auth/user-auth.routes.js"
 import userRouter from "./User/user.routes.js"
 import membershipRouter from "./Membership/membership.routes.js"
 import trainerRouter from "./Trainer/trainer.routes.js"
+import subRouter from "./Sub/sub.routes.js"
 
 
 export {
@@ -10,6 +11,7 @@ export {
     userAuthRouter,
     userRouter,
     membershipRouter,
-    trainerRouter
+    trainerRouter,
+    subRouter
 
 }

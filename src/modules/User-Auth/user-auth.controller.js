@@ -15,8 +15,7 @@ export const signUp = async (req, res, next)=> {
         phoneNumber,
         gender,
         weight,
-        height,
-        memberStatus
+        height
     } = req.body
     // check if email already exists
     const isEmailExist = await User.findOne({email})
@@ -39,8 +38,7 @@ export const signUp = async (req, res, next)=> {
         phoneNumber,
         gender,
         weight,
-        height,
-        memberStatus
+        height
     })
     if(!newUser) {
         return next(new Error("An error occurred while creating user", { cause: 500 }))

@@ -24,7 +24,6 @@ export const signupValidator = {
     gender: Joi.string().required().valid("male", "female"),
     weight: Joi.string().required().min(2).max(3),
     height: Joi.string().required().min(2).max(3),
-    memberStatus: Joi.string().required().valid("active", "inactive"),
   }),
 };
 

@@ -40,8 +40,8 @@ const userSchema = new Schema({
     memberStatus: {
         type: String,
         enum: ["active", "inactive"],
+        default: "inactive",
     },
-
     profileImg: {
         secure_url: { type: String },
         public_id: { type: String }
