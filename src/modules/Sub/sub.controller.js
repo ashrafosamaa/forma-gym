@@ -50,7 +50,7 @@ export const getMySubscriptions = async (req, res, next) => {
 export const getMySubscriptionById = async (req, res, next) => {
     const {subId} = req.params
     const {_id: UserId} = req.authUser
-    const subscription = await Sub.findOne({ _id: subId, UserId }).select("duration startDate endDate price isActive isPaid")
+    const subscription = await Sub.findOne({ _id: subId, UserId }).select("duration startDate endDate price isActive isPaid comment")
         .populate({path: 'TrainerId', select: 'userName phoneNumber'})
     if (!subscription) {
         return next(new Error("Subscription is not found", { cause: 404 }));
@@ -123,7 +123,8 @@ export const deleteMySubscription = async (req, res, next)=> {
 export const getAllSubsByAdmin = async (req, res, next) => {
     // destruct data from req.query
     const {page, size, sortBy} = req.query;
-    const features = new APIFeatures(req.query, Sub.find().select("duration startDate endDate price isActive isPaid"))
+    const features = new APIFeatures(req.query, Sub.find().select("duration startDate endDate price isActive isPaid")
+        .populate({ path: "UserId", select: "firstName phoneNumber" }))
         .pagination({ page, size })
         .sort(sortBy)
     const subscriptions = await features.mongooseQuery
@@ -140,7 +141,7 @@ export const getAllSubsByAdmin = async (req, res, next) => {
 
 export const getSubByAdmin = async (req, res, next) => {
     const {subId} = req.params
-    const sub = await Sub.findById(subId).select("duration startDate endDate price isActive isPaid")
+    const sub = await Sub.findById(subId).select("duration startDate endDate price isActive isPaid comment")
         .populate({ path: "UserId", select: "firstName lastName phoneNumber" })
         .populate({ path: "TrainerId", select: "userName phoneNumber" })
     if (!sub) {
@@ -287,4 +288,48 @@ export const getAllSubsForTrainer = async (req, res, next) => {
         statusCode: 200,
         subs
     });
+}
+
+export const addCommentAndRate = async (req, res, next) => {
+    // destruct data from body
+    const { comment, rating } = req.body
+    const { subId } = req.params
+    const { _id } = req.authUser
+    // get sub
+    const sub = await Sub.findOne({ _id: subId, UserId: _id, isPaid: true })
+    if(!sub) {
+        return next(new Error("Subscription is not found", { cause: 404 }))
+    }
+    if(sub.comment) {
+        return next(new Error("You can not update your comment now", { cause: 403 }))
+    }
+    const trainer = await Trainer.findById({ _id: sub.TrainerId });
+    // add rate for trainer
+    trainer.rate = ((trainer.rate * trainer.rateCount) + rating) / (trainer.rateCount + 1)
+    trainer.rateCount += 1
+    await trainer.save()
+    // add comment
+    sub.comment = comment
+    await sub.save()
+    res.status(200).json({
+        msg: "Comment added successfully",
+        statusCode: 200
+    })
+}
+
+export const deleteComment = async (req, res, next) => {
+    // destruct data from body
+    const { subId } = req.params
+    const { _id } = req.authUser
+    // get sub
+    const sub = await Sub.findOne({ _id: subId, UserId: _id, isPaid: true })
+    if(!sub) {
+        return next(new Error("Subscription is not found", { cause: 404 }))
+    }
+    sub.comment = "no comment"
+    await sub.save()
+    res.status(200).json({
+        msg: "Comment deleted successfully",
+        statusCode: 200
+    })
 }

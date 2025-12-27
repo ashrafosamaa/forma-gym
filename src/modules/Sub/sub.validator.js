@@ -81,3 +81,14 @@ export const getAllUserSubscriptionsValidatorByAdmin = {
         phoneNumber: Joi.string().required().length(11).pattern(/^[0-9]+$/, "i")
     })
 }
+
+
+export const addCommentAndRateValidatorByUser = {
+    body: Joi.object({
+        comment: Joi.string().required().min(5),
+        rating: Joi.number().required().min(1).max(5)
+    }).options({ abortEarly: false }),
+    params: Joi.object({
+        subId: Joi.string().length(24).hex().required()
+    })
+}

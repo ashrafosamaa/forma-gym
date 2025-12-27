@@ -52,5 +52,11 @@ router.get('/for-user', authAdmin(), validationMiddleware(validator.getAllUserSu
 router.get('/for-trainer', authAdmin(), validationMiddleware(validator.getAllUserSubscriptionsValidatorByAdmin),
     expressAsyncHandler(subController.getAllSubsForTrainer))
 
+router.put('/comment-rate/:subId', authUser(), validationMiddleware(validator.addCommentAndRateValidatorByUser),
+    expressAsyncHandler(subController.addCommentAndRate))
+
+router.delete('/comment/:subId', authUser(), validationMiddleware(validator.IDValidator),
+    expressAsyncHandler(subController.deleteComment))
+
 
 export default router;

@@ -2,6 +2,7 @@ import { APIFeatures } from "../../utils/api-features.js";
 import { generateUniqueString } from "../../utils/generate-unique-string.js"
 
 import Trainer from "../../../DB/models/trainer.model.js";
+import Sub from "../../../DB/models/sub.model.js";
 import cloudinaryConnection from "../../utils/cloudinary.js";
 
 import bcrypt from "bcryptjs"
@@ -42,7 +43,7 @@ export const getAlltrainers = async (req, res, next) => {
     // destruct data from req.query
     const {page, size, sortBy} = req.query;
     const features = new APIFeatures(req.query, Trainer.find()
-        .select("userName phoneNumber gender specialization pricePerMonth experience isActive passwordOneUse"))
+        .select("userName phoneNumber gender specialization pricePerMonth experience isActive isFirstTime"))
         .pagination({ page, size })
         .sort(sortBy)
     const trainers = await features.mongooseQuery
@@ -150,12 +151,19 @@ export const deleteTrainer = async(req, res, next)=> {
     if (!deleteTrainer) {
         return next (new Error("Trainer not found", { cause: 404 }))
     }
+    // check trainer subs
+    const subs = await Sub.find({ TrainerId: deleteTrainer._id, isActive: true })
+    if (subs.length) {
+        return next(new Error("Trainer has active subscriptions", { cause: 409 }))
+    }
     // delete photo
     if(deleteTrainer.profileImg.public_id){
         const folder = `${process.env.MAIN_FOLDER}/Trainers/${deleteTrainer.folderId}`
         await cloudinaryConnection().api.delete_resources_by_prefix(folder)
         await cloudinaryConnection().api.delete_folder(folder)
     }
+    // delete subs
+    await Sub.deleteMany({TrainerId: trainerId})
     //delete trainer
     await deleteTrainer.deleteOne()
     // send response
@@ -317,12 +325,19 @@ export const deleteAccount = async (req, res, next)=> {
     const {_id} = req.authTrainer
     // delete trainer data
     const deleteTrainer = await Trainer.findById(_id)
+    // check trainer subs
+    const subs = await Sub.find({ TrainerId: _id, isActive: true })
+    if (subs.length) {
+        return next(new Error("Trainer has active subscriptions", { cause: 409 }))
+    }
     // delete photo
     if(deleteTrainer.profileImg.public_id){
         const folder = `${process.env.MAIN_FOLDER}/Trainers/${deleteTrainer.folderId}`
         await cloudinaryConnection().api.delete_resources_by_prefix(folder)
         await cloudinaryConnection().api.delete_folder(folder)
     }
+    // delete subs
+    await Sub.deleteMany({TrainerId: _id})
     // delete trainer data
     await deleteTrainer.deleteOne()
     // send response
