@@ -2,8 +2,7 @@ import db_connection from "../DB/connection.js"
 
 import { globalResponse } from "./middlewares/global-response.middleware.js"
 import { cronToChangeMembershipsToActive, cronToChangeMembershipsNotActive,
-        cronToChangeSubsToActive, 
-        cronToChangeSubsNotActive} from "./utils/crons.js"
+        cronToChangeSubsToActive, cronToChangeSubsNotActive} from "./utils/crons.js"
 
 import cors from 'cors'
 
@@ -43,6 +42,7 @@ export const initiateApp = (app, express)=> {
     })
 
     app.use(globalResponse)
+
     cronToChangeMembershipsToActive()
     cronToChangeMembershipsNotActive()
     cronToChangeSubsToActive()
