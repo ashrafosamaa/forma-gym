@@ -48,7 +48,7 @@ export function cronToChangeMembershipsNotActive(){
 }
 
 export function cronToChangeSubsToActive(){
-    scheduleJob('* * * * * *', async ()=> {
+    scheduleJob('0 0 0 * * *', async ()=> {
         const subs = await Sub.find({isActive: false, isPaid: true})
         if(!subs.length) return console.log('No subs needed to be active today')
         for (const sub of subs) {
@@ -72,7 +72,7 @@ export function cronToChangeSubsToActive(){
 }
 
 export function cronToChangeSubsNotActive(){
-    scheduleJob('* * * * * *', async ()=> {
+    scheduleJob('0 0 0 * * *', async ()=> {
         const subs = await Sub.find({isActive: true, isPaid: true})
         if(!subs.length) return console.log('No subs needed to be non-active today')
         for (const sub of subs) {
